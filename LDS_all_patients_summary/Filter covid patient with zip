@@ -1,1 +1,7 @@
+def Filter_covid_patient_with_zip(Logic_Liaison_All_patients_summary_facts_table_lds):
+    df = Logic_Liaison_All_patients_summary_facts_table_lds
+    filtered_df = df.filter(
+    (col("postal_code").isNotNull())
+    )
 
+    return(filtered_df)
