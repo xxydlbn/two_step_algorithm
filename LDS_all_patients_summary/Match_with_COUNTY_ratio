@@ -1,0 +1,21 @@
+def Match_with_COUNTY_ratio(Filter_firstmeasurement_with_emptymatching, HUD_ZIP_to_County_Crosswalk):
+    df1 = Filter_firstmeasurement_with_emptymatching
+    df2 = HUD_ZIP_to_County_Crosswalk
+
+    # Name of the column to be removed
+    column_to_remove = "county"
+
+    # Remove the specified column
+    df1 = df1.drop(column_to_remove)
+    # If you want to join only several columns from df2, select these columns along with the joining key
+    df2_selected = df2.select("ZIP", "COUNTY", "TOT_RATIO")
+
+    # Perform the join operation
+    df_joined = df1.join(df2_selected, df1.postal_code == df2_selected.ZIP, "inner")
+
+    # Optionally, if you want to drop the duplicated postal_code column from df2 after the join
+    df_joined = df_joined.drop(df2_selected.ZIP)
+
+    return(df_joined)
+
+
