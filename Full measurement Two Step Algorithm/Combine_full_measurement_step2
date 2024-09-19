@@ -1,0 +1,8 @@
+def Combine_full_measurement_step2(Step2_full_higher_risk, Step2_full_moderate_risk, Step2_full_lower_risk):
+    df1 = Step2_full_lower_risk
+    df2 = Step2_full_moderate_risk
+    df3 = Step2_full_higher_risk
+    df_union = df1.union(df2)
+    df_union = df_union.union(df3)
+
+    return(df_union)
