@@ -1,0 +1,38 @@
+def Get_score_columns_step2(Filter_step2_full_measurement):
+    df = Filter_step2_full_measurement
+    # Adding age-related score
+    df = df.withColumn('age_score',
+                    when(df.age < 55, 0)
+                    .when((df.age >= 55) & (df.age < 65), 1)
+                    .when((df.age >= 65) & (df.age < 75), 2)
+                    .when(df.age >= 75, 3))
+
+    # Adding SpO2-related score
+    df = df.withColumn('SpO2_score', when(df.SpO2_remedy < 93, 2).otherwise(0))
+
+    # Adding BUN-related score
+    df = df.withColumn('BUN_score', when(df.BUN_remedy > 20, 2).otherwise(0))
+
+    # Adding NLR-related score
+    df = df.withColumn('NLR_score', when(df.NLR_remedy > 3.7, 2).otherwise(0))
+
+    # Adding NEU-related score
+    df = df.withColumn('NEU_score', when(df.Neu_remedy > 6.3, 2).otherwise(0))
+
+    # Adding Platelets-related score
+    df = df.withColumn('Platelets_score', when(df.PLA_remedy > 350, 2).otherwise(0))
+
+    # Adding CRP-related score
+    df = df.withColumn('CRP_score', when(df.CRP_remedy > 10, 1).otherwise(0))
+
+    # Now, sum up all the score columns to create a step_two_summary_score
+    df = df.withColumn('step_two_summary_score', 
+                    col('age_score') + 
+                    col('SpO2_score') + 
+                    col('BUN_score') + 
+                    col('NLR_score') + 
+                    col('NEU_score') + 
+                    col('Platelets_score') + 
+                    col('CRP_score'))
+    
+    return(df)
