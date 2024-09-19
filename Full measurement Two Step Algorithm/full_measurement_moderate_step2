@@ -1,0 +1,5 @@
+def full_measurement_moderate_step2(Get_score_columns_step2):
+    df = Get_score_columns_step2
+    df = df.filter( (df.step_two_summary_score  >= "4") & (df.step_two_summary_score  <= "6"))
+
+    return(df)
