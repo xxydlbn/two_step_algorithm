@@ -1,0 +1,36 @@
+def Filter_firstmeasurement_with_emptymatching(join_measurement_within_60_window):
+    df = join_measurement_within_60_window
+    
+    # Get all column names from the DataFrame
+    all_columns = df.columns
+
+    # Assuming you know the first few columns that are not measurement columns
+    non_measurement_columns = ['person_id', 'condition_start_date', 'person_id_records', 'total_visits', 
+    'observation_period', 'sex', 'city','state', 'postal_code', 'county', 'age', 'race', 'race_ethnicity', 
+    'data_partner_id', 'data_extraction_date', 'cdm_name', 'cdm_version', 'shift_date_yn', 'max_num_shift_days']
+
+    # Extract the last 50 measurement column names
+    measurement_columns = [col for col in all_columns if col not in non_measurement_columns]
+    # Group by "person_id" and "condition_start_date", and aggregate the measurement columns
+    grouped_df = df.groupBy("person_id", "condition_start_date")
+    agg_exprs = [
+        first(when(col(measurement).isNotNull(), col(measurement)).otherwise(None), ignorenulls=True).alias(f"{measurement}")
+        for measurement in measurement_columns
+    ]
+    agg_df = grouped_df.agg(*agg_exprs)
+
+    # Select the non-measurement columns based on the non_measurement_list
+    distinct_non_measurement_df = df.select(*non_measurement_columns).distinct()
+
+    # Join the aggregated DataFrame with the distinct non-measurement DataFrame on "person_id" and "condition_start_date"
+    result_df = distinct_non_measurement_df.join(agg_df, ["person_id", "condition_start_date"])
+
+
+    result_df = result_df.filter(col("person_id_measurement").isNotNull())
+
+    result_df = result_df.filter(length(col("postal_code")) == 5)
+
+
+
+    return(result_df)
+  
