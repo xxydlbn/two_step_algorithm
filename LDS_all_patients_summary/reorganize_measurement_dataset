@@ -1,0 +1,25 @@
+def reorganize_measurement_dataset(measurement):
+    df = measurement
+
+    # Replace spaces with underscores in "measurement_concept_name" column
+    df_modified = df.withColumn("measurement_concept_name", regexp_replace("measurement_concept_name", " ", "_"))
+    df_modified = df_modified.withColumn("measurement_concept_name", regexp_replace("measurement_concept_name", "[#/]", ""))
+    df_modified = df_modified.withColumn("measurement_concept_name", regexp_replace("measurement_concept_name", "-", "_"))
+    df_modified = df_modified.withColumn("measurement_concept_name", regexp_replace("measurement_concept_name", "[(.)]", "_"))
+    df_modified = df_modified.withColumn("measurement_concept_name", regexp_replace("measurement_concept_name", "__", "_"))
+
+    #measurement_list = ['Heart rate','Heart rate by Pulse oximetry','Pulse rate','Respiratory rate','Oxygen saturation in Arterial blood by Pulse oximetry',
+#                        'Blood urea nitrogen measurement',
+#                        'Neutrophils [#/volume] in Blood by Automated count','Neutrophils [#/volume] in Blood','Neutrophils [#/volume] in Blood by Manual count',
+#                        'Lymphocytes [#/volume] in Blood by Automated count','Lymphocytes [#/volume] in Blood by Manual count','Lymphocytes [#/volume] in Blood',
+#                         'C reactive protein [Mass/volume] in Serum or Plasma','C-reactive protein measurement',
+#                         'Platelets [#/volume] in Blood by Automated count','Platelets [#/volume] in Blood','Platelets [#/volume] in Blood by Automated count']
+    #df_filtered = df.filter(df.measurement_concept_name.isin(measurement_list))
+
+    #filtered_df = df_filtered.select(df_filtered.person_id, df_filtered.measurement_date, 
+#                                    df_filtered.measurement_concept_name, df_filtered.value_as_number)
+    # Pivot DataFrame
+    #pivoted_df = filtered_df.groupBy("person_id", "measurement_date").pivot("measurement_concept_name").agg(first("value_as_number"))
+
+    return(df_modified)
+    
