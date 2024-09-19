@@ -1,0 +1,10 @@
+def higher_step1_imputed(Get_score_columns_step1_imputation):
+    df = Get_score_columns_step1_imputation
+    df = df.filter(col("step_one_summary_score") >= 7)
+
+    df_selected = df.select(col('person_id'),col("condition_start_date"), col("age"),col("death"),col('sex'),
+                                col("avg_Heart_rate_remedy"),col("avg_Respiratory_rate_remedy"),col("avg_SpO2_remedy"),col("BUN_remedy"),
+                                col("NLR_remedy"),col("Neu_remedy"),col("CRP_remedy"),col("PLA_remedy"),
+                                col("comorbidity_number"))
+
+    return(df_selected)
