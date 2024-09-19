@@ -1,0 +1,23 @@
+def Make_comorbidity_column_no_env(Match_w_Asthma_no_env):
+    df = Match_w_Asthma_no_env
+
+    df = df.withColumn(
+    "DIABETES_indicator",
+    when(
+        (col("DIABETESCOMPLICATED_indicator") == 1) | (col("DIABETESUNCOMPLICATED_indicator") == 1),
+        1
+        ).otherwise(0)
+    )
+
+    # List of column names to sum
+    comorbidity_to_sum = ['CEREBROVASCULARDISEASE_indicator', 'CHRONICLUNGDISEASE_indicator', 
+                            'CONGESTIVEHEARTFAILURE_indicator', 'DIABETES_indicator',
+                            'MYOCARDIALINFARCTION_indicator','ASTHMA_indicator']  # Add your column names here
+    # Create a column expression that sums all the specified columns
+    sum_expression = reduce(lambda a, b: a + b, (col(x) for x in comorbidity_to_sum))
+    # Add a new column to the DataFrame with the sum of the specified columns
+    df = df.withColumn('comorbidity_number', sum_expression)
+
+    return(df)
+
+
