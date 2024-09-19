@@ -1,0 +1,8 @@
+def Combine_step2_imp(higher_step2_imp, moderate_step2_imp, lower_step2_imp):
+    df1 = lower_step2_imp
+    df2 = moderate_step2_imp
+    df3 = higher_step2_imp
+    df_union = df1.union(df2)
+    df_union = df_union.union(df3)
+
+    return(df_union)
