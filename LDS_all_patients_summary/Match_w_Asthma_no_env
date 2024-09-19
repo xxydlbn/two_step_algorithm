@@ -1,0 +1,19 @@
+def Match_w_Asthma_no_env(Match_with_death_info_no_env, Asthma_dataset_no_env):
+    df1 = Match_with_death_info_no_env
+    df2 = Asthma_dataset_no_env
+
+    df2 = df2.withColumnRenamed('person_id', 'person_id_asthma')
+    
+    df1_with_indicator = df1.join(df2.select('person_id_asthma').distinct(), df1.person_id == df2.person_id_asthma, 'left_outer')
+
+    # Create the ASTHMA_indicator column based on whether a match was found
+    df1_with_indicator = df1_with_indicator.withColumn(
+        'ASTHMA_indicator', 
+        F.when(F.col('person_id_asthma').isNull(), 0).otherwise(1)
+    )
+
+    # Drop the duplicate person_id column coming from df2 if not needed
+    df1_with_indicator = df1_with_indicator.drop(col("person_id_asthma"))
+    df1_with_indicator = df1_with_indicator.drop(col('patient_death_indicator'))
+
+    return(df1_with_indicator)
