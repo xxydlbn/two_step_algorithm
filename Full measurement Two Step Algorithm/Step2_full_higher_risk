@@ -1,0 +1,10 @@
+def Step2_full_higher_risk(full_measurement_higher_step2):
+    df2 = full_measurement_higher_step2
+    # Union the DataFrames
+    df2_selected = df2.select(col('person_id'),col("condition_start_date"), col("age"),col("death"),col('sex'),
+                                col("Heart_rate_remedy"),col("Respiratory_rate_remedy"),col("SpO2_remedy"),col("BUN_remedy"),
+                                col("NLR_remedy"),col("Neu_remedy"),col("CRP_remedy"),col("PLA_remedy"),
+                                col("comorbidity_number"))
+
+
+    return(df2_selected)
