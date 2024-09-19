@@ -1,0 +1,10 @@
+def Multivariate10_imputer_iter30_step2(moderate_step1_imputed):
+    # Select columns to impute (excluding 'person_id' and 'condition_start_date' for imputation)
+    columns_to_impute = ["age", "avg_SpO2_remedy", "avg_Heart_rate_remedy", "avg_Respiratory_rate_remedy", "BUN_remedy", "NLR_remedy", "Neu_remedy", "CRP_remedy", "PLA_remedy"]
+    df = moderate_step1_imputed
+
+    imp = IterativeImputer(max_iter=30, random_state=0)
+    df[columns_to_impute] = imp.fit_transform(df[columns_to_impute])
+
+
+    return(df)
