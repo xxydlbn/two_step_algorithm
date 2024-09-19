@@ -1,0 +1,9 @@
+def Asthma_dataset_no_env(condition_occurrence):
+    df = condition_occurrence
+    # Define the list of values
+    condition_values = [317009, 3349096]
+
+    # Filter rows where condition_concept_id is in the list of condition_values
+    df = df.filter(col("condition_concept_id").isin(condition_values))
+    
+    return(df)
