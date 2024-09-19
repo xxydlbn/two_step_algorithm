@@ -1,0 +1,22 @@
+def thirty_days_window_screening(visits_and_windows):
+    df = visits_and_windows
+    # Ensure condition_start_date is a date type
+    df = df.withColumn("condition_start_date", to_date(col("condition_start_date")))
+
+    # Define window specification
+    windowSpec = Window.partitionBy("person_id").orderBy("condition_start_date")
+
+    # Calculate the difference in days from the previous row
+    df = df.withColumn("prev_date_diff", 
+                    abs(datediff(col("condition_start_date"), 
+                                    lag("condition_start_date", 1).over(windowSpec))))
+
+    # Filter rows where the difference is null (first occurrence) or greater than 30 days
+    filtered_df = df.filter((col("prev_date_diff").isNull()) | (col("prev_date_diff") > 30))
+
+    # Optionally, remove the "prev_date_diff" column if you want to revert to the original DataFrame structure
+    filtered_df = filtered_df.drop("prev_date_diff")
+
+    return(filtered_df)
+
+
