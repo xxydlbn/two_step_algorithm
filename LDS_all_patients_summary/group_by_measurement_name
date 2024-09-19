@@ -1,0 +1,6 @@
+def group_by_measurement_name(pivoted_measurement_by_concept_ID):
+    df = pivoted_measurement_by_concept_ID
+    # Pivot DataFrame
+    pivoted_df = df.groupBy("person_id", "measurement_date").pivot("measurement_concept_name").agg(first("value_as_number"))
+
+    return(pivoted_df)
