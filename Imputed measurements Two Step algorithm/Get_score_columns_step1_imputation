@@ -1,0 +1,32 @@
+def Get_score_columns_step1_imputation(pooled_step1_MI):
+    df = pooled_step1_MI
+    # Adding comorbidity_score
+    df = df.withColumn('comorbidity_score', when(df.comorbidity_number >= 2, 1).otherwise(0))
+
+    # Adding HR_score
+    df = df.withColumn('HR_score', when(df.avg_Heart_rate_remedy > 100, 1).otherwise(0))
+
+    # Adding RR_score
+    df = df.withColumn('RR_score', when(df.avg_Respiratory_rate_remedy >= 30, 2).otherwise(0))
+
+    # Adding SpO2_score
+    df = df.withColumn('SpO2_score', when(df.avg_SpO2_remedy < 93, 2).otherwise(0))
+
+    # Adding age_score
+    df = df.withColumn('age_score', 
+                    when(df.age < 55, 0)
+                    .when((df.age >= 55) & (df.age <= 64), 2)
+                    .when((df.age >= 65) & (df.age <= 74), 3)
+                    .when(df.age >= 75, 5)
+                    .otherwise(0)) # Handling unexpected cases, though you might not need this
+
+    df = df.withColumn('step_one_summary_score', 
+                    col('comorbidity_score') + 
+                    col('HR_score') + 
+                    col('RR_score') + 
+                    col('SpO2_score') + 
+                    col('age_score'))
+
+
+
+    return(df)
