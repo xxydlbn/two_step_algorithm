@@ -1,0 +1,24 @@
+def moderate_step2_imp(Get_score_columns_step2_imp, Get_score_columns_step1_imputation):
+    df = Get_score_columns_step2_imp
+    df2 = Get_score_columns_step1_imputation.select("person_id",'sex').withColumnRenamed("person_id", "person_id_sex")
+    df = df.filter( (df.step_two_summary_score  >= "4") & (df.step_two_summary_score  <= "6"))
+    df_sex = df.join(df2, df.person_id == df2.person_id_sex, 'left')
+    df_sex = df_sex.drop("person_id_sex")
+    df_sex = df_sex.distinct()
+    
+    # Define the age groups
+    df_combine = df_sex.withColumn(
+        "age_group",
+        F.when(F.col("age") <= 29, "18_29")
+        .when((F.col("age") >= 30) & (F.col("age") <= 39), "30_39")
+        .when((F.col("age") >= 40) & (F.col("age") <= 49), "40_49")
+        .when((F.col("age") >= 50) & (F.col("age") <= 59), "50_59")
+        .when((F.col("age") >= 60) & (F.col("age") <= 69), "60_69")
+        .when((F.col("age") >= 70) & (F.col("age") <= 79), "70_79")
+        .when((F.col("age") >= 80) & (F.col("age") <= 89), "80_89")
+        .when((F.col("age") >= 90), "90")
+        
+    )
+
+
+    return(df_combine)
