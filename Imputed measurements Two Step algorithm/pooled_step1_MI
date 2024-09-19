@@ -1,0 +1,13 @@
+def pooled_step1_MI(Union_imputed_data_for_pooling_Pyspark):
+    df = Union_imputed_data_for_pooling_Pyspark
+    # Define the window specification
+    windowSpec = Window.partitionBy("person_id", "condition_start_date")
+
+    # Calculate averages using the windowSpec for partitioning
+    df_with_averages = df.withColumn("avg_Heart_rate_remedy", avg("Heart_rate_remedy").over(windowSpec)) \
+                        .withColumn("avg_Respiratory_rate_remedy", avg("Respiratory_rate_remedy").over(windowSpec)) \
+                        .withColumn("avg_SpO2_remedy", avg("SpO2_remedy").over(windowSpec))
+
+    df_with_averages = df_with_averages.drop('Heart_rate_remedy','Respiratory_rate_remedy','SpO2_remedy').distinct()
+
+    return(df_with_averages)
