@@ -1,0 +1,21 @@
+def Match_with_death_info_no_env(Remove_total_ratio_and_county, death):
+    df1 = Remove_total_ratio_and_county
+    df2 = death
+
+    df2 = df2.select(col('person_id'), col('death_date'))
+    # Step 1: Perform a left join between df1 and df2 on person_id
+    df_joined = df1.join(df2, "person_id", "left")
+
+    # Step 2: Use a window function to identify the latest condition_start_date for each person_id
+    windowSpec = Window.partitionBy("person_id").orderBy(col("condition_start_date").desc())
+
+    # Mark as death == 1 if condition_start_date is within 60 days before the death_date
+    df_joined = df_joined.withColumn("death",
+                                    when((col("death_date").isNotNull()) & 
+                                        (datediff(col("death_date"), col("condition_start_date")) <= 90), 1)
+                                    .otherwise(0))
+
+    # Filter the DataFrame to include only rows where age is greater than 18
+    df_joined = df_joined.filter(col("age") >= 18)
+
+    return(df_joined)
