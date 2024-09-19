@@ -1,0 +1,19 @@
+def pivoted_measurement_by_concept_ID(reorganize_measurement_dataset):
+    df = reorganize_measurement_dataset
+
+    df = df.withColumn("measurement_concept_name", regexp_replace("measurement_concept_name", "[;]", "_"))
+    measurement_concept_id_list = ['3020460','21490872','3013502','4239408','3010156',
+                        '40769763','4301868','3004327','3013650','3027018',
+                        '3007461','3003215','45770406','4020553','2212762',
+                        '3000965','3024929','4017361','3016502','4096101',
+                        '3017732','3024171','3001376','4313591','2212761',
+                        '46272908','4196147','3035320','21490846','4208414',
+                        '40762499','3019198','3017501', '3013682']
+    df_filtered = df.filter(df.measurement_concept_id.isin(measurement_concept_id_list))
+
+    filtered_df = df_filtered.select(df_filtered.person_id, df_filtered.measurement_date, df_filtered.measurement_concept_id,
+                                    df_filtered.measurement_concept_name, df_filtered.value_as_number)
+    # Pivot DataFrame
+    #pivoted_df = filtered_df.groupBy("person_id", "measurement_date").pivot("measurement_concept_name").agg(first("value_as_number"))
+
+    return(filtered_df)
