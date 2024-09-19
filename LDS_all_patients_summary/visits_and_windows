@@ -1,0 +1,12 @@
+def visits_and_windows(Use_contains_U071_filter_COVID_records, Filter_covid_patient_with_zip):
+    df1 = Use_contains_U071_filter_COVID_records
+    df2 = Filter_covid_patient_with_zip
+    # Perform an inner join on the 'person_id' column
+    # Selecting multiple columns by name
+    selected_df1 = df1.select("person_id", "condition_start_date")
+
+    # Rename the 'person_id' column in df1 to 'person_id_records'
+    df1_renamed = selected_df1.withColumnRenamed("person_id", "person_id_records")
+    df_joined = df1_renamed.join(df2, df1_renamed.person_id_records == df2.person_id, 'left')
+
+    return(df_joined)
