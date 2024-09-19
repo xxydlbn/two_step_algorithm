@@ -1,0 +1,6 @@
+def Combine_full_measurement_step1(full_measurement_lower_step1, full_measurement_higher_step1):
+    df1 = full_measurement_lower_step1
+    df2 = full_measurement_higher_step1
+    df_union = df1.union(df2)
+
+    return(df_union)
