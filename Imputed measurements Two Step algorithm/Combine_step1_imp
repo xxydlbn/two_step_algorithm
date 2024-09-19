@@ -1,0 +1,6 @@
+def Combine_step1_imp(higher_step1_imputed, lower_step1_imputed):
+    df1 = lower_step1_imputed
+    df2 = higher_step1_imputed
+    df_union = df1.union(df2)
+
+    return(df_union)
