@@ -1,0 +1,26 @@
+def check_missing(Make_comorbidity_column_no_env):
+    df = Make_comorbidity_column_no_env
+    # List of columns to calculate missing rate for
+    columns_to_check = ["Heart_rate_remedy", "Respiratory_rate_remedy", "SpO2_remedy",
+                        "CRP_remedy", "Lym_remedy", "Neu_remedy", "PLA_remedy", "BUN_remedy", "NLR_remedy"]
+    
+    # Total number of rows
+    total_rows = df.count()
+
+    # Function to calculate missing rate
+    def missing_rate(df, cols):
+        missing_summary = []
+        for col_name in cols:
+            missing_count = df.filter(df[col_name].isNull()).count()
+            missing_rate = missing_count / total_rows
+            missing_summary.append((col_name, missing_count, missing_rate))
+        return missing_summary
+
+    # Calculate missing rate for specified columns
+    missing_summary = missing_rate(df, columns_to_check)
+
+    # Convert to DataFrame for better presentation
+    missing_df = spark.createDataFrame(missing_summary, ["Column", "MissingCount", "MissingRate"])
+
+
+    return(missing_df)
