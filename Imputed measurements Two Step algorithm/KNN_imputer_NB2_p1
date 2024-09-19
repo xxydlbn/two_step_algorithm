@@ -1,0 +1,18 @@
+def KNN_imputer_NB2_p1(Make_comorbidity_column_no_env):
+    df = Make_comorbidity_column_no_env
+    # Calculate the midpoint
+    midpoint = len(df) // 2
+
+    # Select the first half
+    df = df.iloc[:midpoint]
+
+    # Initialize the KNN Imputer
+    imputer = KNNImputer(n_neighbors=2)
+
+    # Select columns to impute (excluding 'person_id' and 'condition_start_date' for imputation)
+    columns_to_impute = ["age", "SpO2_remedy", "Heart_rate_remedy", "Respiratory_rate_remedy"]
+
+    # Fit and transform the data using only the selected columns
+    df[columns_to_impute] = imputer.fit_transform(df[columns_to_impute])
+
+    return(df)
