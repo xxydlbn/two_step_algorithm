@@ -1,0 +1,9 @@
+def higher_step2_imp(Get_score_columns_step2_imp, Get_score_columns_step1_imputation):
+    df = Get_score_columns_step2_imp
+    df2 = Get_score_columns_step1_imputation.select("person_id",'sex').withColumnRenamed("person_id", "person_id_sex")
+    df = df.filter(col("step_two_summary_score") >= 7)
+    df_sex = df.join(df2, df.person_id == df2.person_id_sex, 'left')
+    df_sex = df_sex.drop("person_id_sex")
+    df_sex = df_sex.distinct()
+    
+    return(df_sex)
