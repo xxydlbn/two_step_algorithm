@@ -1,0 +1,7 @@
+def Save_full_measurement_step1_no_env(Make_comorbidity_column_no_env):
+    df = Make_comorbidity_column_no_env
+    filtered_df = df.filter(
+    col("Heart_rate_remedy").isNotNull() & col("Respiratory_rate_remedy").isNotNull() & col("SpO2_remedy").isNotNull()
+    )
+
+    return(filtered_df)
