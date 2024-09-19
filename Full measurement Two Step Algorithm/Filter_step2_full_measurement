@@ -1,0 +1,7 @@
+def Filter_step2_full_measurement(full_measurement_moderate_step1):
+    df = full_measurement_moderate_step1
+    filtered_df = df.filter(
+    col("CRP_remedy").isNotNull() & col("PLA_remedy").isNotNull() & col("SpO2_remedy").isNotNull() & col("BUN_remedy").isNotNull() & col("NLR_remedy").isNotNull() & col("Neu_remedy").isNotNull()
+    )
+
+    return(filtered_df)
