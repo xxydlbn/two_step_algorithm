@@ -1,0 +1,19 @@
+def join_measurement_within_60_window(thirty_days_window_screening, group_by_measurement_name):
+    df1 = group_by_measurement_name
+    df2 = thirty_days_window_screening
+
+    df1 = df1.withColumnRenamed("person_id", "person_id_measurement")
+
+    # Ensure the date columns are in the correct date format (if not already)
+    df1 = df1.withColumn("measurement_date", to_date(col("measurement_date")))
+    df2 = df2.withColumn("condition_start_date", to_date(col("condition_start_date")))
+
+    # Perform an inner join on person_id with a condition on the date
+    condition = (df1["person_id_measurement"] == df2["person_id"]) & \
+                (datediff(df2["condition_start_date"], df1["measurement_date"]) <= 30) & \
+                (datediff(df2["condition_start_date"], df1["measurement_date"]) >= -30)
+
+    joined_df = df2.join(df1, condition, "left")
+
+    return(joined_df)
+
