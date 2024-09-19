@@ -1,0 +1,22 @@
+def pooled_step2_MI(Union_imputed_step2):
+    df = Union_imputed_step2
+    # Define the window specification
+    windowSpec = Window.partitionBy("person_id", "condition_start_date")
+
+    # Calculate averages using the windowSpec for partitioning
+    df_with_averages = df.withColumn("avg_BUN_remedy", avg("BUN_remedy").over(windowSpec)) \
+                        .withColumn("avg_NLR_remedy", avg("NLR_remedy").over(windowSpec)) \
+                        .withColumn("avg_Neu_remedy", avg("Neu_remedy").over(windowSpec)) \
+                        .withColumn("avg_CRP_remedy", avg("CRP_remedy").over(windowSpec)) \
+                        .withColumn("avg_PLA_remedy", avg("PLA_remedy").over(windowSpec))
+
+    df_with_averages = df_with_averages.drop('BUN_remedy','NLR_remedy','Neu_remedy','CRP_remedy','PLA_remedy').distinct()
+
+    df_modified = df_with_averages.withColumn("avg_CRP_remedy", when(col("avg_CRP_remedy") > 600, 600).otherwise(col("avg_CRP_remedy")))
+    df_modified = df_with_averages.withColumn("avg_BUN_remedy", when(col("avg_BUN_remedy") > 200, 200).otherwise(col("avg_BUN_remedy")))
+    df_modified = df_with_averages.withColumn("avg_Neu_remedy", when(col("avg_Neu_remedy") > 100, 100).otherwise(col("avg_Neu_remedy")))
+    df_modified = df_with_averages.withColumn("avg_PLA_remedy", when(col("avg_PLA_remedy") > 1000, 1000).otherwise(col("avg_PLA_remedy")))
+    df_modified = df_with_averages.withColumn("avg_Heart_rate_remedy", when(col("avg_Heart_rate_remedy") > 1000, 1000).otherwise(col("avg_Heart_rate_remedy")))
+    df_modified = df_with_averages.withColumn("avg_Respiratory_rate_remedy", when(col("avg_Respiratory_rate_remedy") > 1000, 1000).otherwise(col("avg_Respiratory_rate_remedy")))
+
+    return(df_modified)
