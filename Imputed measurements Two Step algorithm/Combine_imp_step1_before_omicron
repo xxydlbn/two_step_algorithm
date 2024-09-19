@@ -1,0 +1,6 @@
+def Combine_imp_step1_before_omicron(Combine_step1_imp):
+    df = Combine_step1_imp
+    filtered_df = df.filter(col("condition_start_date") <= "2021-11-20")
+
+
+    return(filtered_df)
