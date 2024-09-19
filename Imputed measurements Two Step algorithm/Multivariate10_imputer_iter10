@@ -1,0 +1,10 @@
+def Multivariate10_imputer_iter10(Make_comorbidity_column_no_env):
+    # Select columns to impute (excluding 'person_id' and 'condition_start_date' for imputation)
+    columns_to_impute = ["age", "SpO2_remedy", "Heart_rate_remedy", "Respiratory_rate_remedy"]
+    df = Make_comorbidity_column_no_env
+
+    imp = IterativeImputer(max_iter=10, random_state=0)
+    df[columns_to_impute] = imp.fit_transform(df[columns_to_impute])
+
+
+    return(df)
