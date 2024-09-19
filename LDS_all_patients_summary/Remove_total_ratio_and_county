@@ -1,0 +1,6 @@
+def Remove_total_ratio_and_county(Combine_different_measurement_names_no_env):
+    df = Combine_different_measurement_names_no_env
+
+    df = df.drop("TOT_RATIO", "COUNTY").distinct()
+
+    return(df)
