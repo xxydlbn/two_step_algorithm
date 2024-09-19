@@ -1,0 +1,10 @@
+def full_measurement_higher_step1(Get_score_columns_step1):
+    df = Get_score_columns_step1
+    df = df.filter(col("step_one_summary_score") >= 7)
+
+    df_selected = df.select(col('person_id'),col("condition_start_date"), col("age"),col("death"),col('sex'),
+                                col("Heart_rate_remedy"),col("Respiratory_rate_remedy"),col("SpO2_remedy"),col("BUN_remedy"),
+                                col("NLR_remedy"),col("Neu_remedy"),col("CRP_remedy"),col("PLA_remedy"),
+                                col("comorbidity_number"))
+
+    return(df_selected)
