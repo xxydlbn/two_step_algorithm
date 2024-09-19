@@ -1,0 +1,14 @@
+def Union_imputed_step2(KNN_imputer_NB2_step2, KNN_imputer_NB2_step2_p2,KNN_imputer_NB3_step2, KNN_imputer_NB3_step2_p2, KNN_imputer_NB5_step2, KNN_imputer_NB5_step2_p2, Multivariate10_imputer_iter10_step2, Multivariate10_imputer_iter20_step2, Multivariate10_imputer_iter30_step2):
+    df1 = KNN_imputer_NB2_step2
+    df2 = KNN_imputer_NB2_step2_p2
+    df3 = KNN_imputer_NB3_step2
+    df4 = KNN_imputer_NB3_step2_p2
+    df5 = KNN_imputer_NB5_step2
+    df6 = KNN_imputer_NB5_step2_p2
+    df7 = Multivariate10_imputer_iter10_step2
+    df8 = Multivariate10_imputer_iter20_step2
+    df9 = Multivariate10_imputer_iter30_step2
+    # Combine the DataFrames by rows
+    combined_df = df1.union(df2).union(df3).union(df4).union(df5).union(df6).union(df7).union(df8).union(df9)
+
+    return(combined_df)
