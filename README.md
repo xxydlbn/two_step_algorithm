@@ -1,7 +1,9 @@
 # two_step_algorithm
 Code for two-step algorithm validation
 
-Each file is a Python (Pyspark/Pandas) function or R function that can be called and generate related output tables
+The N3C codebook allows Python (Pyspark, Pandas), R, and SQL to operate datasets
+
+Each file is a Python (Pyspark/Pandas) function, R function, or SQL function that can be called and generate related output tables
 
 1)  LDS_all_patients_summary folder contains all the codes for the data cleaning and EDA
 
