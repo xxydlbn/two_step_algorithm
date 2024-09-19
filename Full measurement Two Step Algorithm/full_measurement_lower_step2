@@ -1,0 +1,5 @@
+def full_measurement_lower_step2(Get_score_columns_step2):
+    df = Get_score_columns_step2
+    df = df.filter(col("step_two_summary_score") <= 3)
+
+    return(df)
