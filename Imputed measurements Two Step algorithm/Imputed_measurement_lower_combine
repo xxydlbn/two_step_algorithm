@@ -1,0 +1,36 @@
+def Imputed_measurement_lower_combine(lower_step2_imp, lower_step1_imputed):
+    df1 = lower_step1_imputed
+    df2 = lower_step2_imp
+
+    df2 = df2.select(col("person_id"),col("condition_start_date"),col("age"),col("death"),col("sex"),col("avg_Heart_rate_remedy"),col("avg_Respiratory_rate_remedy"),
+                        col("avg_SpO2_remedy"),col("avg_BUN_remedy"),col("avg_NLR_remedy"),col("avg_Neu_remedy"),col("avg_CRP_remedy"),col("avg_PLA_remedy"),col("comorbidity_number"))
+
+    rename_dict = {
+    "avg_BUN_remedy": "BUN_remedy",
+    "avg_NLR_remedy": "NLR_remedy",
+    "avg_Neu_remedy": "Neu_remedy",
+    "avg_CRP_remedy": "CRP_remedy",
+    "avg_PLA_remedy": "PLA_remedy"
+    }
+
+    for old_name, new_name in rename_dict.items():
+        df2 = df2.withColumnRenamed(old_name, new_name)
+
+    df_combine = df1.union(df2)
+
+
+    # Define the age groups
+    df_combine = df_combine.withColumn(
+        "age_group",
+        F.when(F.col("age") <= 29, "18_29")
+        .when((F.col("age") >= 30) & (F.col("age") <= 39), "30_39")
+        .when((F.col("age") >= 40) & (F.col("age") <= 49), "40_49")
+        .when((F.col("age") >= 50) & (F.col("age") <= 59), "50_59")
+        .when((F.col("age") >= 60) & (F.col("age") <= 69), "60_69")
+        .when((F.col("age") >= 70) & (F.col("age") <= 79), "70_79")
+        .when((F.col("age") >= 80) & (F.col("age") <= 89), "80_89")
+        .when((F.col("age") >= 90), "90")
+        
+    )
+
+    return(df_combine)
