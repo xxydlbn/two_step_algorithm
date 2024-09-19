@@ -1,0 +1,5 @@
+def Use_contains_U071_filter_COVID_records(condition_occurrence):
+    df1 = condition_occurrence
+    df_COVID = df1.filter(col("condition_source_value").contains("U07.1"))
+
+    return(df_COVID)
