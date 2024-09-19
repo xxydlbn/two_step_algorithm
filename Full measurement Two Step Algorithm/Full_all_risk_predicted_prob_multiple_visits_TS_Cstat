@@ -1,0 +1,93 @@
+Full_all_risk_predicted_prob_multiple_visits_TS_Cstat <- function(Combine_full_measurement_step2,Combine_full_measurement_step1) {
+    validation_set_step1 = Combine_full_measurement_step1
+    y_true_step1 <- Combine_full_measurement_step1$death
+    
+    validation_set_step2 = Combine_full_measurement_step2
+    y_true_step2 <- Combine_full_measurement_step2$death
+
+    #########################################################################################################
+    # Define the coefficients
+    coef_age_step1 <- c(0, 2, 3, 5)
+    coef_RR_step1 <- 2
+    coef_SPO2_step1 <- 2
+    coef_comorbidity_step1 <- 1
+    coef_HPR_step1 <- 1
+
+    # Calculate the linear combinations and predicted probabilities
+    linear_combination_step1 <- coef_HPR_step1 * (validation_set_step1$Heart_rate_remedy > 100) + coef_RR_step1 * (validation_set_step1$Respiratory_rate_remedy >= 30) + coef_SPO2_step1 * (validation_set_step1$SpO2_remedy < 93) +
+                          coef_comorbidity_step1 * (validation_set_step1$comorbidity_number > 2) +
+                          coef_age_step1[1] * (validation_set_step1$age < 55) + coef_age_step1[2] * (validation_set_step1$age >= 55 & validation_set_step1$age < 65) +
+                          coef_age_step1[3] * (validation_set_step1$age >= 65 & validation_set_step1$age < 75) + coef_age_step1[4] * (validation_set_step1$age >= 75)
+
+    predicted_probabilities_step1 <- 1 / (1 + exp(-linear_combination_step1))
+
+    # Sort the predicted probabilities and true labels in descending order
+    sorted_indices_step1 <- order(predicted_probabilities_step1, decreasing = TRUE)
+    sorted_predicted_probabilities_step1 <- predicted_probabilities_step1[sorted_indices_step1]
+    sorted_true_labels_step1 <- y_true_step1[sorted_indices_step1]
+
+    #########################################################################################################
+
+    # Define the coefficients
+    coef_age_step2 <- c(0, 1, 2, 3)
+    coef_SpO2_step2 <- 2
+    coef_BUN_step2 <- 2
+    coef_NLR_step2 <- 2
+    coef_NEU_step2 <- 2
+    coef_PLA_step2 <- 2
+    coef_CRP_step2 <- 1
+
+    # Calculate the linear combinations and predicted probabilities
+    linear_combination_step2 <- coef_SpO2_step2 * (validation_set_step2$SpO2_remedy < 93) + coef_BUN_step2 * (validation_set_step2$BUN_remedy > 20) + 
+                          coef_NLR_step2 * (validation_set_step2$NLR_remedy > 3.7) + coef_NEU_step2 * (validation_set_step2$Neu_remedy > 6.3) + 
+                          coef_PLA_step2 * (validation_set_step2$PLA_remedy >= 350) + coef_CRP_step2 * (validation_set_step2$CRP_remedy > 10) +
+                          coef_age_step2[1] * (validation_set_step2$age < 55) + coef_age_step2[2] * (validation_set_step2$age >= 55 & validation_set_step2$age < 65) +
+                          coef_age_step2[3] * (validation_set_step2$age >= 65 & validation_set_step2$age < 75) + coef_age_step2[4] * (validation_set_step2$age >= 75)
+
+    predicted_probabilities_step2 <- 1 / (1 + exp(-linear_combination_step2))
+
+    # Sort the predicted probabilities and true labels in descending order
+    sorted_indices_step2 <- order(predicted_probabilities_step2, decreasing = TRUE)
+    sorted_predicted_probabilities_step2 <- predicted_probabilities_step2[sorted_indices_step2]
+    sorted_true_labels_step2 <- y_true_step2[sorted_indices_step2]
+
+    #########################################################################################################
+    predicted_probabilities <- c(predicted_probabilities_step1, predicted_probabilities_step2)
+    y_true <- c(y_true_step1, y_true_step2)
+    sorted_indices <- order(predicted_probabilities, decreasing = TRUE)
+    sorted_predicted_probabilities <- predicted_probabilities[sorted_indices]
+    sorted_true_labels <- y_true[sorted_indices]
+
+    # Calculate the true positive rate (TPR) and false positive rate (FPR) for the ROC curve
+    total_positives <- sum(y_true == 1)
+    total_negatives <- sum(y_true == 0)
+    TP <- 0
+    FP <- 0
+    TPR <- numeric(length(sorted_predicted_probabilities) + 1)
+    FPR <- numeric(length(sorted_predicted_probabilities) + 1)
+
+    for (i in seq_along(sorted_predicted_probabilities)) {
+        if (!is.na(sorted_true_labels[i]) && sorted_true_labels[i] == 1) {
+            TP <- TP + 1
+        } else {
+            FP <- FP + 1
+        }
+        TPR[i] <- TP / total_positives
+        FPR[i] <- FP / total_negatives
+    }
+
+    # Add the (0, 0) and (1, 1) points to the ROC curve
+    TPR[length(TPR)] <- 1
+    FPR[length(FPR)] <- 1
+
+    # Calculate the C-statistic (AUC) using the trapezoidal rule
+    auc <- sum(diff(FPR) * (TPR[-1] + TPR[-length(TPR)]) / 2)
+
+    # Create a dataframe with the AUC value
+    auc_df <- data.frame(AUC = auc)
+
+    return(auc_df)
+
+
+
+}
